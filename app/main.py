@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.api import casa, inquilino, contrato
+from app.api import casa, inquilino, contrato, pagamento
 
 app = FastAPI(
     title="LocaFácil API",
@@ -11,6 +11,7 @@ app = FastAPI(
 app.include_router(casa.router)
 app.include_router(inquilino.router)
 app.include_router(contrato.router)
+app.include_router(pagamento.router)
 
 
 @app.get("/health")
