@@ -6,6 +6,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 class Settings(BaseSettings):
     database_url: str
     resend_api_key: str = ""
+    email_from: str = "LocaFácil <onboarding@resend.dev>"
     notification_email_to: str = ""
     dias_antecedencia_alerta: int = 3
 
