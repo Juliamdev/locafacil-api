@@ -86,3 +86,6 @@ class PagamentoService:
             saldo_devedor=float(saldo_devedor),
             status=status,
         )
+
+    def historico_de_pagamentos(self, contrato_id):
+        return self.pagamento_repo.listar_pagamentos_do_contrato(contrato_id)

@@ -20,3 +20,9 @@ def registrar_pagamento(dados: PagamentoCreate, db: Session = Depends(get_db)):
 def status_do_contrato(contrato_id: uuid.UUID, db: Session = Depends(get_db)):
     """Retorna o saldo devedor acumulado e o status (em_dia/parcial/atrasado)."""
     return PagamentoService(db).status_do_contrato(contrato_id)
+
+
+@router.get("/contratos/{contrato_id}/pagamentos", response_model=list[PagamentoOut])
+def historico_de_pagamentos(contrato_id: uuid.UUID, db: Session = Depends(get_db)):
+    """Histórico de pagamentos do contrato, mais recente primeiro."""
+    return PagamentoService(db).historico_de_pagamentos(contrato_id)
