@@ -1,5 +1,5 @@
 import calendar
-from datetime import date
+from datetime import date, timedelta
 
 from sqlalchemy.orm import Session
 from dateutil.relativedelta import relativedelta
@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 from app.models.contrato import Contrato, StatusContrato
 from app.models.parcela import Parcela
 from app.repositories.contrato_repository import ContratoRepository
-from app.schemas.contrato import ContratoCreate, ContratoEncerrar
+from app.schemas.contrato import ContratoCreate, ContratoEncerrar, ContratoRenovar
 
 
 class ContratoService:
@@ -43,6 +43,35 @@ class ContratoService:
         contrato.status = StatusContrato.ENCERRADO
         contrato.data_fim_real = dados.data_fim_real
         return self.repository.salvar(contrato)
+
+    def renovar_contrato(self, contrato_id, dados: ContratoRenovar) -> Contrato:
+        """Renovação = encerrar o contrato atual + criar um novo de 1 ano,
+        mantendo a mesma casa e inquilino. Preserva o histórico de
+        pagamentos do contrato anterior intacto, ao contrário de uma edição
+        direta do valor do aluguel.
+
+        Por padrão, o novo contrato começa exatamente onde o atual estava
+        previsto para terminar (renovação "sem gap"), e mantém o mesmo dia
+        de vencimento — a menos que o cliente informe outros valores.
+        """
+        contrato_atual = self.repository.buscar_por_id(contrato_id)
+
+        data_inicio_novo = dados.data_inicio or contrato_atual.data_fim_prevista
+        dia_vencimento_novo = dados.dia_vencimento or contrato_atual.dia_vencimento
+
+        contrato_atual.status = StatusContrato.ENCERRADO
+        contrato_atual.data_fim_real = data_inicio_novo - timedelta(days=1)
+        self.repository.salvar(contrato_atual)
+
+        return self.criar_contrato(
+            ContratoCreate(
+                casa_id=contrato_atual.casa_id,
+                inquilino_id=contrato_atual.inquilino_id,
+                valor_aluguel=dados.valor_aluguel,
+                dia_vencimento=dia_vencimento_novo,
+                data_inicio=data_inicio_novo,
+            )
+        )
 
     def _gerar_parcelas_do_ano(self, contrato: Contrato) -> list[Parcela]:
         """Gera as 12 parcelas mensais do contrato, respeitando o dia de

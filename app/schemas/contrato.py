@@ -17,6 +17,16 @@ class ContratoEncerrar(BaseModel):
     data_fim_real: date
 
 
+class ContratoRenovar(BaseModel):
+    """Renovar mantém a mesma casa e inquilino, mas permite reajustar o
+    valor do aluguel (e opcionalmente o dia de vencimento). O contrato
+    atual é encerrado e um novo de 1 ano é criado a partir de data_inicio."""
+
+    valor_aluguel: float
+    dia_vencimento: int | None = None
+    data_inicio: date | None = None
+
+
 class ContratoOut(BaseModel):
     id: uuid.UUID
     casa_id: uuid.UUID
