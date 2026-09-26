@@ -4,10 +4,13 @@ from pydantic import BaseModel
 
 class CasaBase(BaseModel):
     endereco: str
-    valor_referencia: float
 
 
 class CasaCreate(CasaBase):
+    pass
+
+
+class CasaUpdate(CasaBase):
     pass
 
 

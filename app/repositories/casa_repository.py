@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 
 from app.models.casa import Casa
-from app.schemas.casa import CasaCreate
+from app.models.contrato import Contrato
+from app.schemas.casa import CasaCreate, CasaUpdate
 
 
 class CasaRepository:
@@ -20,3 +21,17 @@ class CasaRepository:
         self.db.commit()
         self.db.refresh(casa)
         return casa
+
+    def atualizar(self, casa: Casa, dados: CasaUpdate) -> Casa:
+        casa.endereco = dados.endereco
+        self.db.add(casa)
+        self.db.commit()
+        self.db.refresh(casa)
+        return casa
+
+    def excluir(self, casa: Casa) -> None:
+        self.db.delete(casa)
+        self.db.commit()
+
+    def tem_contrato_vinculado(self, casa_id) -> bool:
+        return self.db.query(Contrato).filter(Contrato.casa_id == casa_id).first() is not None

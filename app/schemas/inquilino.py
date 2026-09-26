@@ -12,6 +12,10 @@ class InquilinoCreate(InquilinoBase):
     pass
 
 
+class InquilinoUpdate(InquilinoBase):
+    pass
+
+
 class InquilinoOut(InquilinoBase):
     id: uuid.UUID
 
