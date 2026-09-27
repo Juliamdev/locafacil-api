@@ -13,3 +13,4 @@ class Casa(Base):
     endereco = Column(String, nullable=False)
 
     contratos = relationship("Contrato", back_populates="casa")
+    despesas = relationship("Despesa", back_populates="casa")

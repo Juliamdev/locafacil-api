@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api import casa, inquilino, contrato, pagamento, jobs
+from app.api import casa, inquilino, contrato, pagamento, jobs, despesa, dashboard
 from app.jobs.scheduler import iniciar_scheduler
 
 
@@ -24,6 +24,8 @@ app.include_router(inquilino.router)
 app.include_router(contrato.router)
 app.include_router(pagamento.router)
 app.include_router(jobs.router)
+app.include_router(despesa.router)
+app.include_router(dashboard.router)
 
 
 @app.get("/health")
